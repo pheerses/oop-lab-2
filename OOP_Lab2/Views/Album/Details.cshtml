@@ -1,0 +1,57 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<h2>@Model.Title (@Model.ReleaseYear)</h2>
+<img src="@Model.CoverImagePath" />
+<h3>Tracks</h3>
+<div class="track-list">
+    <table>
+        <tbody>
+            @for (int i = 0; i < Model.Tracks.Count; i++)
+            {
+                <tr class="track-row" track-path="@Model.Tracks[i].AudioFilePath">
+                    <td class="track-row-cover">
+                        <div class="undercover">
+                            <div class="pulse-circle"></div>
+                        </div>
+                        <div class="track-row-cover-img">@(i+1)</div>
+                    </td>
+                    <td class="track-row-info"><span class="track-row-title">@Model.Tracks[i].Title </span><br /><span class="track-row-artist">---</span></td>
+                    <td class="track-row-control"><a href="track/delete/@Model.Tracks[i].Id"><img src="/img/delete.png"></a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="audio-player">
+    <audio id="audio" preload="auto" src=""></audio>
+
+    <div id="controls">
+        <button id="play-pause" class="button">Play</button>
+        <span id="time">00:00 / 00:00</span>
+    </div>
+
+    <div id="progress-container">
+        <div id="progress"></div>
+    </div>
+</div>
+
+<h3>Add New Track</h3>
+<form action="/album/createtrack/" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="albumId" value="@Model.Id" />
+    <div class="form-group">
+        <label for="title">Track Title</label>
+        <input type="text" id="title" name="title" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="duration">Duration (in seconds)</label>
+        <input type="number" id="duration" name="duration" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="audioFile">Audio File</label>
+        <input type="file" id="audioFile" name="audioFile" class="form-control-file" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Add Track</button>
+</form>

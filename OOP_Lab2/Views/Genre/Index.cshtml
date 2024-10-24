@@ -1,0 +1,25 @@
+﻿@{
+    Layout = "_Layout";
+}
+@using OOP_Lab2.Models
+@model IEnumerable<Genre>
+
+<h2>Genres</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var track in Model)
+        {
+            <tr>
+                <td>@track.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="/Genre/Create" class="btn btn-primary">Add Genre</a>

@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "_Layout";
+}
+<h2>@Model.Name</h2>
+
+@if (!string.IsNullOrEmpty(Model.AvatarPath))
+{
+    <img src="@Model.AvatarPath" alt="Avatar" />
+}
+
+<h3>Albums</h3>
+<ul>
+    @foreach (var album in Model.Albums)
+    {
+        <li> <img src="@album.CoverImagePath" /><a href="/Album/Details/@album.Id">@album.Title</a></li>
+    }
+</ul>
+
+<h3>Add New Album</h3>
+<form action="/artist/createalbum" enctype="multipart/form-data" method="post">
+    <input type="hidden" name="artistId" value="@Model.Id" />
+    <div class="form-group">
+        <label for="title">Album Title</label>
+        <input type="text" id="title" name="title" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label for="genreId">Genre</label>
+        <select id="genreId" name="genreId" class="form-control" required>
+            @foreach (var genre in ViewBag.Genres)
+            {
+                <option value="@genre.Id">@genre.Name</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="coverImage">Cover Image</label>
+        <input type="file" id="coverImage" name="coverImage" class="form-control-file">
+    </div>
+
+    <div class="form-group">
+        <label for="releaseYear">Release Year</label>
+        <input type="number" id="releaseYear" name="releaseYear" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Create Album</button>
+</form>

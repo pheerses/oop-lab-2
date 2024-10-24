@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="/css/site.css" />
+    <script src="/js/audio.js"></script>
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/track">Tracks</a></li>
+                <li><a href="/album">Albums</a></li>
+                <li><a href="/artist">Artists</a></li>
+                <li><a href="/genre">Genres</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        @RenderBody() <!-- Здесь будет отображаться контент представления -->
+    </main>
+
+    <footer>
+        <p>© 2024 Данил Титовец</p>
+    </footer>
+</body>
+</html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/site.css" />
+</head>
