@@ -30,3 +30,14 @@ public class SearchByAlbum : ISearchStrategy
 			.ToListAsync();
 	}
 }
+
+public class SearchByTrack : ISearchStrategy
+{
+    public async Task<List<Track>> SearchAsync(MusicCatalogContext context, string query)
+    {
+        return await context.Tracks
+            .Include(t => t.Album)
+            .Where(t => t.Title.Contains(query) || t.Album.Title.Contains(query))
+            .ToListAsync();
+    }
+}

@@ -1,0 +1,30 @@
+﻿@{
+    Layout = "_Layout";
+}
+@using OOP_Lab2.Models
+@model IEnumerable<object>
+
+@if (Model is IEnumerable<Artist>)
+{
+    foreach (var artist in (IEnumerable<Artist>)Model)
+    {
+        <p>Artist: @artist.Name</p>
+    }
+}
+else if (Model is IEnumerable<Album>)
+{
+    foreach (var album in (IEnumerable<Album>)Model)
+    {
+        <p>Album: @album.Title</p>
+        <p>Artist: @album.Artist.Name</p>
+    }
+}
+else if (Model is IEnumerable<Track>)
+{
+    foreach (var track in (IEnumerable<Track>)Model)
+    {
+        <p>Track: @track.Title</p>
+        <p>Album: @track.Album.Title</p>
+        <p>Artist: @track.Album.Artist.Name</p>
+    }
+}

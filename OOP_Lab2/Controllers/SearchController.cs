@@ -17,24 +17,27 @@ namespace OOP_Lab2.Controllers
 			_searchStrategy = strategy;
 		}
 
-		public async Task<IActionResult> Search(string query, string searchType)
-		{
-			switch (searchType)
-			{
-				case "artist":
-					SetStrategy(new SearchByArtist());
-					break;
-				case "album":
-					SetStrategy(new SearchByAlbum());
-					break;
-				default:
-					SetStrategy(new SearchByArtist());
-					break;
-			}
+        public async Task<IActionResult> Search(string query, string searchType)
+        {
+            switch (searchType)
+            {
+                case "artist":
+                    SetStrategy(new SearchByArtist());
+                    break;
+                case "album":
+                    SetStrategy(new SearchByAlbum());
+                    break;
+                case "track":
+                    SetStrategy(new SearchByTrack());
+                    break;
+                default:
+                    SetStrategy(new SearchByArtist());
+                    break;
+            }
 
-			var results = await _searchStrategy.SearchAsync(_context, query);
-			return View("SearchResults", results);
-		}
-	}
+            var results = await _searchStrategy.SearchAsync(_context, query);
+            return View("SearchResults", results);
+        }
+    }
 
 }
