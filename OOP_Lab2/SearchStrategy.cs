@@ -4,40 +4,85 @@ using OOP_Lab2.Models;
 
 namespace OOP_Lab2
 {
-	public interface ISearchStrategy
-	{
-		Task<List<Artist>> SearchAsync(MusicCatalogContext context, string query);
-	}
+    public interface ISearchStrategy<T>
+    {
+        Task<List<T>> SearchAsync(MusicCatalogContext context, string query);
+    }
 
 }
 
-public class SearchByArtist : ISearchStrategy
+public class SearchByArtist : ISearchStrategy<Artist>
 {
-	public async Task<List<Artist>> SearchAsync(MusicCatalogContext context, string query)
-	{
-		return await context.Artists
-			.Where(a => a.Name.Contains(query))
-			.ToListAsync();
-	}
+    public async Task<List<Artist>> SearchAsync(MusicCatalogContext context, string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return await context.Artists.ToListAsync();
+        }
+
+        query = query.ToLower();
+        Console.WriteLine(query);
+
+        return await context.Artists
+            .Where(a => a.Name.ToLower().Contains(query))
+            .ToListAsync();
+    }
 }
 
-public class SearchByAlbum : ISearchStrategy
+public class SearchByAlbum : ISearchStrategy<Album>
 {
-	public async Task<List<Artist>> SearchAsync(MusicCatalogContext context, string query)
-	{
-		return await context.Artists
-			.Where(a => a.Albums.Any(al => al.Title.Contains(query)))
-			.ToListAsync();
-	}
+    public async Task<List<Album>> SearchAsync(MusicCatalogContext context, string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return await context.Albums
+            .Include(al => al.Artist).ToListAsync();
+        }
+
+        query = query.ToLower();
+
+
+        return await context.Albums
+            .Include(al => al.Artist)
+            .Where(al => al.Title.ToLower().Contains(query))
+            .ToListAsync();
+    }
 }
 
-public class SearchByTrack : ISearchStrategy
+public class SearchByTrack : ISearchStrategy<Track>
 {
     public async Task<List<Track>> SearchAsync(MusicCatalogContext context, string query)
     {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return await context.Tracks
+            .Include(t => t.Album.Artist).ToListAsync();
+        }
+
+        query = query.ToLower();
+
+
         return await context.Tracks
-            .Include(t => t.Album)
-            .Where(t => t.Title.Contains(query) || t.Album.Title.Contains(query))
+            .Include(t => t.Album.Artist)
+            .Where(t => t.Title.ToLower().Contains(query))
+            .ToListAsync();
+    }
+}
+
+public class SearchByPlaylist : ISearchStrategy<Playlist>
+{
+    public async Task<List<Playlist>> SearchAsync(MusicCatalogContext context, string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return await context.Compilations.ToListAsync();
+        }
+
+        query = query.ToLower();
+
+
+        return await context.Compilations
+            .Where(p => p.Title.ToLower().Contains(query))
             .ToListAsync();
     }
 }

@@ -6,25 +6,160 @@
 
 @if (Model is IEnumerable<Artist>)
 {
-    foreach (var artist in (IEnumerable<Artist>)Model)
-    {
-        <p>Artist: @artist.Name</p>
-    }
+
+    <form action="/search/searchartists" method="get">
+        <div class="form-group">
+            <input type="text" name="query" class="form-control" placeholder="Введите запрос" value="@ViewData["Query"]" />
+        </div>
+        <button type="submit" class="btn btn-primary">Поиск</button>
+    </form>
+    <link rel="stylesheet" type="text/css" href="/css/artists.css" />
+
+    <h2>Исполнители</h2>
+    <div class="artist-list">
+        @foreach (var artist in (IEnumerable < Artist >) Model)
+        {
+            <div class="artist">
+                <a href="/artist/details/@artist.Id">
+                    @if (!string.IsNullOrEmpty(artist.AvatarPath))
+                    {
+                        <img class="artist-avatar" src="@artist.AvatarPath" alt="Avatar" />
+                    }
+                    <p>@artist.Name</p>
+                </a>
+            </div>
+        }
+        <div class="artist-form">
+            <form class="nice-form-group" action="/artist/create" method="post" enctype="multipart/form-data">
+                <div class="nice-form-group" class="form-group">
+                    <label for="name">Имя</label>
+                    <input class="nice-form-group" type="text" id="name" name="name" class="form-control" required />
+                </div>
+
+                <div class="nice-form-group" class="form-group">
+                    <label class="nice-form-group" for="avatar">Аватарка</label>
+                    <input class="nice-form-group" type="file" id="avatar" name="avatar" class="form-control-file" />
+                </div>
+                <div class="toggle-code">
+                    <button type="submit" class="btn btn-primary">Создать Исполнителя</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
 }
 else if (Model is IEnumerable<Album>)
 {
-    foreach (var album in (IEnumerable<Album>)Model)
+    <form action="/search/searchalbums" method="get">
+        <div class="form-group">
+            <input type="text" name="query" class="form-control" placeholder="Введите запрос" value="@ViewData["Query"]" />
+        </div>
+        <button type="submit" class="btn btn-primary">Поиск</button>
+    </form>
+    <link rel="stylesheet" type="text/css" href="/css/artists.css" />
+
+    <h2>Альбомы</h2>
+    <div class="artist-list">
+
+    @foreach (var album in (IEnumerable<Album>)Model)
     {
-        <p>Album: @album.Title</p>
-        <p>Artist: @album.Artist.Name</p>
+            <div class="artist">
+            <a href="/album/details/@album.Id">
+                @if (!string.IsNullOrEmpty(album.CoverImagePath))
+                    {
+                    <img class="album-cover" src="@album.CoverImagePath" alt="Avatar" />
+                    }
+                    <p>@album.Title</p>
+                    <a href="/artist/details/@album.Artist.Id">
+                        <p class="album-artist">@album.Artist.Name</p>
+                        </a>
+                </a>
+            </div>
     }
+    </div>
 }
 else if (Model is IEnumerable<Track>)
 {
-    foreach (var track in (IEnumerable<Track>)Model)
+    <form action="/search/searchtracks" method="get">
+        <div class="form-group">
+            <input type="text" name="query" class="form-control" placeholder="Введите запрос" value="@ViewData["Query"]" />
+        </div>
+        <button type="submit" class="btn btn-primary">Поиск</button>
+    </form>
+    <h2>Трэки</h2>
+    <div class="track-list">
+        <table>
+            <tbody>
+                @foreach (var track in (IEnumerable<Track>)Model)
+                {
+                    <tr class="track-row" track-path="@track.AudioFilePath">
+                        <td class="track-row-cover">
+                            <div class="undercover">
+                                <div class="pulse-circle"></div>
+                            </div>
+                            <img src="@track.Album.CoverImagePath" class="track-row-cover-img">
+                        </td>
+                        <td class="track-row-info"><span class="track-row-title">@track.Title </span><br /><span class="track-row-artist">@track.Album.Artist.Name</span></td>
+                        <td class="track-row-control"><a href="track/delete/@track.Id"><img src="img/delete.png"></a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div id="audio-player">
+        <audio id="audio" preload="auto" src=""></audio>
+
+        <div id="controls">
+            <button id="play-pause" class="button">Play</button>
+            <span id="time">00:00 / 00:00</span>
+        </div>
+
+        <div id="progress-container">
+            <div id="progress"></div>
+        </div>
+    </div>
+}
+
+else if (Model is IEnumerable<Playlist>)
+{
+    <form action="/search/searchplaylists" method="get">
+        <div class="form-group">
+            <input type="text" name="query" class="form-control" placeholder="Введите запрос" value="@ViewData["Query"]" />
+        </div>
+        <button type="submit" class="btn btn-primary">Поиск</button>
+    </form>
+
+    foreach (var playlist in (IEnumerable<Playlist>)Model)
     {
-        <p>Track: @track.Title</p>
-        <p>Album: @track.Album.Title</p>
-        <p>Artist: @track.Album.Artist.Name</p>
+        <p>Плейлист: @playlist.Title</p>
+
+
     }
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <h2>Создать плейлист</h2>
+
+    <form action="/playlist/create" method="post">
+        <div class="form-group">
+            <label for="Title">Название плейлиста</label>
+            <input type="text" class="form-control" id="Title" name="Title" required />
+        </div>
+
+        <div class="form-group">
+            <label for="Tracks">Выберите треки</label>
+            <select multiple class="form-control" id="Tracks" name="SelectedTrackIds">
+                @foreach (var track in ViewBag.Tracks as List<OOP_Lab2.Models.Track>)
+                {
+                    <option value="@track.Id">@track.Title - @track.Album.Title</option>
+                }
+            </select>
+            <small>Зажмите Ctrl (Windows) или Command (Mac) для выбора нескольких треков.</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Создать плейлист</button>
+    </form>
 }

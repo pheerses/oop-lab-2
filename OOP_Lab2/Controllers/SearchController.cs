@@ -1,43 +1,48 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace OOP_Lab2.Controllers
 {
-	public class SearchController : Controller
-	{
-		private readonly MusicCatalogContext _context;
-		private ISearchStrategy _searchStrategy;
+    public class SearchController : Controller
+    {
+        private readonly MusicCatalogContext _context;
+        private ISearchStrategy<object> _searchStrategy;
 
-		public SearchController(MusicCatalogContext context)
-		{
-			_context = context;
-		}
-
-		public void SetStrategy(ISearchStrategy strategy)
-		{
-			_searchStrategy = strategy;
-		}
-
-        public async Task<IActionResult> Search(string query, string searchType)
+        public SearchController(MusicCatalogContext context)
         {
-            switch (searchType)
-            {
-                case "artist":
-                    SetStrategy(new SearchByArtist());
-                    break;
-                case "album":
-                    SetStrategy(new SearchByAlbum());
-                    break;
-                case "track":
-                    SetStrategy(new SearchByTrack());
-                    break;
-                default:
-                    SetStrategy(new SearchByArtist());
-                    break;
-            }
+            _context = context;
+        }
+        public async Task<IActionResult> SearchArtists(string query)
+        {
+            return await Search(query, new SearchByArtist());
+        }
 
-            var results = await _searchStrategy.SearchAsync(_context, query);
+        public async Task<IActionResult> SearchAlbums(string query)
+        {
+            return await Search(query, new SearchByAlbum());
+        }
+
+        public async Task<IActionResult> SearchTracks(string query)
+        {
+            return await Search(query, new SearchByTrack());
+        }
+
+        public async Task<IActionResult> SearchPlaylists(string query)
+        {
+            return await Search(query, new SearchByPlaylist());
+        }
+
+
+
+        public async Task<IActionResult> Search<T>(string query, ISearchStrategy<T> strategy) where T : class
+        {
+            var results = await strategy.SearchAsync(_context, query);
+            ViewBag.Tracks = _context.Tracks
+                .Include(t => t.Album).ToList();
             return View("SearchResults", results);
         }
+
     }
+
 
 }

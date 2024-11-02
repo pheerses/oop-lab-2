@@ -74,3 +74,14 @@ h2{
     justify-content: center;
     margin-top: 20px;
 }
+
+.album-cover {
+    margin-bottom: 15px;
+    width: 200px;
+    height: 200px;
+}
+
+.album-artist{
+    margin-top: 10px;
+    opacity: 0.5;
+}

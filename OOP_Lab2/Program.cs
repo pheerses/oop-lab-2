@@ -25,6 +25,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Artist}/{action=Index}/{id?}");
+    pattern: "{controller=Genre}/{action=Index}/{id?}");
 
 app.Run();
